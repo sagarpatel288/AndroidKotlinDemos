@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name='Demos'
+rootProject.name='DemosKotlin'

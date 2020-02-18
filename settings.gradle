@@ -1,2 +1,4 @@
-include ':app'
+include ':app', ':commons', ':room'
 rootProject.name='DemosKotlin'
+project(':commons').projectDir = new File('Common/app')
+project(':room').projectDir = new File('Ecommerce/app')

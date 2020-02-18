@@ -1,0 +1,6 @@
+[submodule "Common"]
+	path = Common
+	url = https://github.com/sagarpatel288/Common.git
+[submodule "Ecommerce"]
+	path = Ecommerce
+	url = https://github.com/sagarpatel288/Ecommerce.git

@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: "kotlin-kapt"
 
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -10,11 +11,18 @@ android {
         applicationId "com.example.android.demos"
         minSdkVersion 14
         targetSdkVersion 29
+        // Making either of these two values dynamic in the defaultConfig will
+        // require a full APK build and reinstallation because the AndroidManifest.xml
+        // must be updated.
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    // https://developer.android.com/studio/build/optimize-your-build#optimize
+    // The defaultConfig values above are fixed, so your incremental builds don't
+    // need to rebuild the manifest (and therefore the whole APK, slowing build times).
 
     dataBinding {
         enabled = true
@@ -26,11 +34,40 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "default"
+    productFlavors {
+        // When building a variant that uses this flavor, the following configurations
+        // override those in the defaultConfig block.
+        dev {
+            // To avoid using legacy multidex when building from the command line,
+            // set minSdkVersion to 21 or higher. When using Android Studio 2.3 or higher,
+            // the build automatically avoids legacy multidex when deploying to a device running
+            // API level 21 or higher—regardless of what you set as your minSdkVersion.
+            // Library projects cannot set applicationIdSuffix. applicationIdSuffix is set to '.dev' in flavor 'dev'.
+            versionNameSuffix "-dev"
+            applicationIdSuffix '.dev'
+            // The following configuration limits the "dev" flavor to using
+            // English stringresources and xxhdpi screen-density resources.
+            resConfigs "en", "xxhdpi"
+            // If you don't need to run a Crashlytics report, speed up your debug builds by disabling the plugin as follows:
+            ext.enableCrashlytics = false
+            // To prevent Crashlytics from automatically updating its build ID, add the following to your build.gradle file:
+            ext.alwaysUpdateBuildId = false
+        }
+
+        prod {
+            // If you've configured the defaultConfig block for the release version of
+            // your app, you can leave this block empty and Gradle uses configurations in
+            // the defaultConfig block instead. You still need to create this flavor.
+            // Otherwise, all variants use the "dev" flavor configurations.
+        }
+    }
 }
 
 dependencies {
     def life_cycle_version = "2.2.0"
-    def room_version = "2.2.3"
+    def room_version = "2.2.4"
     def koin_version = "2.0.1"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -42,7 +79,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$life_cycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$life_cycle_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$life_cycle_version"
-    kapt "androidx.lifecycle:lifecycle-compiler:$life_cycle_version"
+//    kapt "androidx.lifecycle:lifecycle-compiler:$life_cycle_version"
+    kapt "androidx.lifecycle:lifecycle-common-java8:$life_cycle_version"
     // For Kotlin use kapt instead of annotationProcessor
     implementation "androidx.activity:activity-ktx:1.1.0"
 

@@ -1,7 +1,8 @@
-package com.example.android.demos
+package com.example.android.demos.stackexchangelist
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.android.demos.R
 
 class MainActivity : AppCompatActivity() {
 
